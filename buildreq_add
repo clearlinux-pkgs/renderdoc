@@ -1,0 +1,6 @@
+# This file contains additional build requirements that did not get
+# picked up automatically. One name per line, no whitespace.
+glslang-dev
+pugixml-dev
+lz4-dev
+zstd-dev
