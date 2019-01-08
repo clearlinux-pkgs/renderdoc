@@ -4,7 +4,7 @@
 #
 Name     : renderdoc
 Version  : 1.1.reduced
-Release  : 1
+Release  : 2
 URL      : http://localhost/cgit/projects/renderdoc/snapshot/renderdoc-1.1-reduced.tar.xz
 Source0  : http://localhost/cgit/projects/renderdoc/snapshot/renderdoc-1.1-reduced.tar.xz
 Source1  : https://github.com/baldurk/swig/archive/renderdoc-modified-5.tar.gz
@@ -109,7 +109,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1543275760
+export SOURCE_DATE_EPOCH=1546974927
 mkdir -p clr-build
 pushd clr-build
 %cmake .. -DBUILD_VERSION_STABLE=ON \
@@ -124,7 +124,7 @@ make  %{?_smp_mflags} VERBOSE=1
 popd
 
 %install
-export SOURCE_DATE_EPOCH=1543275760
+export SOURCE_DATE_EPOCH=1546974927
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/renderdoc
 cp LICENSE.md %{buildroot}/usr/share/package-licenses/renderdoc/LICENSE.md
@@ -145,6 +145,9 @@ cp util/installer/LICENSE.rtf %{buildroot}/usr/share/package-licenses/renderdoc/
 pushd clr-build
 %make_install
 popd
+## install_append content
+rm -rf /usr/share/menu/
+## install_append end
 
 %files
 %defattr(-,root,root,-)
@@ -159,7 +162,7 @@ popd
 /usr/share/applications/renderdoc.desktop
 /usr/share/icons/hicolor/scalable/mimetypes/application-x-renderdoc-capture.svg
 /usr/share/menu/renderdoc
-/usr/share/mime/packages/renderdoc-capture.xml
+/usr/share/mime-packages/renderdoc-capture.xml
 /usr/share/pixmaps/renderdoc-icon-16x16.xpm
 /usr/share/pixmaps/renderdoc-icon-32x32.xpm
 /usr/share/thumbnailers/renderdoc.thumbnailer
