@@ -4,7 +4,7 @@
 #
 Name     : renderdoc
 Version  : 1.1.reduced
-Release  : 2
+Release  : 3
 URL      : http://localhost/cgit/projects/renderdoc/snapshot/renderdoc-1.1-reduced.tar.xz
 Source0  : http://localhost/cgit/projects/renderdoc/snapshot/renderdoc-1.1-reduced.tar.xz
 Source1  : https://github.com/baldurk/swig/archive/renderdoc-modified-5.tar.gz
@@ -109,9 +109,10 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1546974927
+export SOURCE_DATE_EPOCH=1551639759
 mkdir -p clr-build
 pushd clr-build
+export LDFLAGS="${LDFLAGS} -fno-lto"
 %cmake .. -DBUILD_VERSION_STABLE=ON \
 -DBUILD_VERSION_DIST_NAME="clear" \
 -DENABLE_GL=ON \
@@ -124,7 +125,7 @@ make  %{?_smp_mflags} VERBOSE=1
 popd
 
 %install
-export SOURCE_DATE_EPOCH=1546974927
+export SOURCE_DATE_EPOCH=1551639759
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/renderdoc
 cp LICENSE.md %{buildroot}/usr/share/package-licenses/renderdoc/LICENSE.md
