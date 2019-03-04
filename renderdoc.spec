@@ -4,7 +4,7 @@
 #
 Name     : renderdoc
 Version  : 1.1.reduced
-Release  : 3
+Release  : 4
 URL      : http://localhost/cgit/projects/renderdoc/snapshot/renderdoc-1.1-reduced.tar.xz
 Source0  : http://localhost/cgit/projects/renderdoc/snapshot/renderdoc-1.1-reduced.tar.xz
 Source1  : https://github.com/baldurk/swig/archive/renderdoc-modified-5.tar.gz
@@ -109,7 +109,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1551639759
+export SOURCE_DATE_EPOCH=1551725465
 mkdir -p clr-build
 pushd clr-build
 export LDFLAGS="${LDFLAGS} -fno-lto"
@@ -120,12 +120,13 @@ export LDFLAGS="${LDFLAGS} -fno-lto"
 -DENABLE_VULKAN=ON \
 -DENABLE_VULKAN=ENABLE_RENDERDOCCMD \
 -DRENDERDOC_SWIG_PACKAGE=%{SOURCE1} \
--DLIB_SUBFOLDER=renderdoc
+-DLIB_SUBFOLDER=renderdoc \
+-DVULKAN_LAYER_FOLDER=/usr/share/vulkan/implicit_layer.d
 make  %{?_smp_mflags} VERBOSE=1
 popd
 
 %install
-export SOURCE_DATE_EPOCH=1551639759
+export SOURCE_DATE_EPOCH=1551725465
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/renderdoc
 cp LICENSE.md %{buildroot}/usr/share/package-licenses/renderdoc/LICENSE.md
@@ -167,6 +168,7 @@ rm -rf /usr/share/menu/
 /usr/share/pixmaps/renderdoc-icon-16x16.xpm
 /usr/share/pixmaps/renderdoc-icon-32x32.xpm
 /usr/share/thumbnailers/renderdoc.thumbnailer
+/usr/share/vulkan/implicit_layer.d/renderdoc_capture.json
 
 %files dev
 %defattr(-,root,root,-)
