@@ -1,4 +1,4 @@
-From c1ed7497b60bb5f1302fcc51b30b1362219aa533 Mon Sep 17 00:00:00 2001
+From a129584cd741c166cb9e033a6e6f1618f38eac10 Mon Sep 17 00:00:00 2001
 From: Thiago Macieira <thiago.macieira@intel.com>
 Date: Mon, 26 Nov 2018 13:45:45 -0800
 Subject: [PATCH] Don't use bundled sources for components we have in the
@@ -6,14 +6,14 @@ Subject: [PATCH] Don't use bundled sources for components we have in the
 
 Signed-off-by: Thiago Macieira <thiago.macieira@intel.com>
 ---
- renderdoc/CMakeLists.txt                      |  39 +------
+ renderdoc/CMakeLists.txt                      |  54 +--------
  renderdoc/core/replay_proxy.cpp               |   2 +-
  renderdoc/driver/d3d11/d3d11_resources.cpp    |   2 +-
  renderdoc/driver/d3d12/d3d12_resources.cpp    |   2 +-
  renderdoc/driver/gl/gl_shader_refl.cpp        |   2 +-
- renderdoc/driver/shaders/spirv/CMakeLists.txt | 105 +-----------------
- .../driver/shaders/spirv/spirv_common.cpp     |   2 +-
- renderdoc/driver/shaders/spirv/spirv_common.h |   2 +-
+ renderdoc/driver/shaders/spirv/CMakeLists.txt | 110 +-----------------
+ .../driver/shaders/spirv/spirv_common.cpp     |   4 +-
+ renderdoc/driver/shaders/spirv/spirv_common.h |   6 +-
  .../driver/shaders/spirv/spirv_compile.cpp    |   4 +-
  .../shaders/spirv/spirv_disassemble.cpp       |  12 +-
  renderdoc/driver/shaders/spirv/spirv_editor.h |   2 +-
@@ -26,13 +26,13 @@ Signed-off-by: Thiago Macieira <thiago.macieira@intel.com>
  renderdoc/serialise/codecs/xml_codec.cpp      |   2 +-
  renderdoc/serialise/lz4io.h                   |   2 +-
  renderdoc/serialise/zstdio.h                  |   2 +-
- 20 files changed, 33 insertions(+), 161 deletions(-)
+ 20 files changed, 36 insertions(+), 184 deletions(-)
 
 diff --git a/renderdoc/CMakeLists.txt b/renderdoc/CMakeLists.txt
-index b236740e4..83d9f691d 100644
+index 5cb7440a4..5794b36b0 100644
 --- a/renderdoc/CMakeLists.txt
 +++ b/renderdoc/CMakeLists.txt
-@@ -24,7 +24,12 @@ elseif(UNIX)
+@@ -46,7 +46,12 @@ elseif(UNIX)
      list(APPEND RDOC_LIBRARIES
          PRIVATE -lm
          PRIVATE -ldl
@@ -46,7 +46,7 @@ index b236740e4..83d9f691d 100644
  
      if(ENABLE_XLIB)
          find_package(X11 REQUIRED)
-@@ -161,40 +166,8 @@ set(sources
+@@ -181,55 +186,8 @@ set(sources
      3rdparty/android/android_manifest.h
      3rdparty/catch/catch.cpp
      3rdparty/catch/catch.hpp
@@ -59,12 +59,20 @@ index b236740e4..83d9f691d 100644
      3rdparty/miniz/miniz.h
 -    3rdparty/zstd/bitstream.h
 -    3rdparty/zstd/compiler.h
+-    3rdparty/zstd/cpu.h
+-    3rdparty/zstd/debug.c
+-    3rdparty/zstd/debug.h
 -    3rdparty/zstd/entropy_common.c
 -    3rdparty/zstd/error_private.c
 -    3rdparty/zstd/error_private.h
 -    3rdparty/zstd/fse.h
+-    3rdparty/zstd/fse_compress.c
 -    3rdparty/zstd/fse_decompress.c
+-    3rdparty/zstd/hist.c
+-    3rdparty/zstd/hist.h
 -    3rdparty/zstd/huf.h
+-    3rdparty/zstd/huf_compress.c
+-    3rdparty/zstd/huf_decompress.c
 -    3rdparty/zstd/mem.h
 -    3rdparty/zstd/pool.c
 -    3rdparty/zstd/pool.h
@@ -72,23 +80,30 @@ index b236740e4..83d9f691d 100644
 -    3rdparty/zstd/threading.h
 -    3rdparty/zstd/xxhash.c
 -    3rdparty/zstd/xxhash.h
+-    3rdparty/zstd/zstd.h
 -    3rdparty/zstd/zstd_common.c
+-    3rdparty/zstd/zstd_compress.c
+-    3rdparty/zstd/zstd_compress_internal.h
+-    3rdparty/zstd/zstd_decompress.c
+-    3rdparty/zstd/zstd_double_fast.c
+-    3rdparty/zstd/zstd_double_fast.h
 -    3rdparty/zstd/zstd_errors.h
+-    3rdparty/zstd/zstd_fast.c
+-    3rdparty/zstd/zstd_fast.h
 -    3rdparty/zstd/zstd_internal.h
--    3rdparty/zstd/fse_compress.c
--    3rdparty/zstd/huf_compress.c
+-    3rdparty/zstd/zstd_lazy.c
+-    3rdparty/zstd/zstd_lazy.h
+-    3rdparty/zstd/zstd_ldm.c
+-    3rdparty/zstd/zstd_ldm.h
+-    3rdparty/zstd/zstd_opt.c
+-    3rdparty/zstd/zstd_opt.h
 -    3rdparty/zstd/zstdmt_compress.c
 -    3rdparty/zstd/zstdmt_compress.h
--    3rdparty/zstd/zstd_compress.c
--    3rdparty/zstd/zstd_opt.h
--    3rdparty/zstd/huf_decompress.c
--    3rdparty/zstd/zstd_decompress.c
--    3rdparty/zstd/zstd.h
      3rdparty/stb/stb_image.h
      3rdparty/stb/stb_image_write.h
      3rdparty/stb/stb_image_resize.h
 diff --git a/renderdoc/core/replay_proxy.cpp b/renderdoc/core/replay_proxy.cpp
-index 739c1d1f6..f20d9e017 100644
+index ec10d85c2..bb1c16b1e 100644
 --- a/renderdoc/core/replay_proxy.cpp
 +++ b/renderdoc/core/replay_proxy.cpp
 @@ -24,7 +24,7 @@
@@ -99,9 +114,9 @@ index 739c1d1f6..f20d9e017 100644
 +#include "lz4.h"
  #include "serialise/lz4io.h"
  
- // utility macros for implementing proxied functions
+ template <>
 diff --git a/renderdoc/driver/d3d11/d3d11_resources.cpp b/renderdoc/driver/d3d11/d3d11_resources.cpp
-index 6c0ce0a15..930b7ca79 100644
+index 2de33572c..94ff167e7 100644
 --- a/renderdoc/driver/d3d11/d3d11_resources.cpp
 +++ b/renderdoc/driver/d3d11/d3d11_resources.cpp
 @@ -24,7 +24,7 @@
@@ -114,7 +129,7 @@ index 6c0ce0a15..930b7ca79 100644
  #include "driver/d3d11/d3d11_context.h"
  #include "driver/d3d11/d3d11_renderstate.h"
 diff --git a/renderdoc/driver/d3d12/d3d12_resources.cpp b/renderdoc/driver/d3d12/d3d12_resources.cpp
-index 627bd05b0..30081fa98 100644
+index 5314cae64..b8fd9a2f4 100644
 --- a/renderdoc/driver/d3d12/d3d12_resources.cpp
 +++ b/renderdoc/driver/d3d12/d3d12_resources.cpp
 @@ -23,7 +23,7 @@
@@ -127,7 +142,7 @@ index 627bd05b0..30081fa98 100644
  #include "d3d12_command_list.h"
  #include "d3d12_command_queue.h"
 diff --git a/renderdoc/driver/gl/gl_shader_refl.cpp b/renderdoc/driver/gl/gl_shader_refl.cpp
-index 35a87d276..0146693ed 100644
+index 824736e75..fa7bfa05c 100644
 --- a/renderdoc/driver/gl/gl_shader_refl.cpp
 +++ b/renderdoc/driver/gl/gl_shader_refl.cpp
 @@ -25,7 +25,7 @@
@@ -138,12 +153,12 @@ index 35a87d276..0146693ed 100644
 +#include "glslang/glslang/Public/ShaderLang.h"
  #include "gl_driver.h"
  
- void sort(rdcarray<ShaderConstant> &vars)
+ template <>
 diff --git a/renderdoc/driver/shaders/spirv/CMakeLists.txt b/renderdoc/driver/shaders/spirv/CMakeLists.txt
-index 8ee73e4db..d5c2f17fd 100644
+index 779ad0ff1..d5c2f17fd 100644
 --- a/renderdoc/driver/shaders/spirv/CMakeLists.txt
 +++ b/renderdoc/driver/shaders/spirv/CMakeLists.txt
-@@ -1,88 +1,3 @@
+@@ -1,91 +1,3 @@
 -set(glslang_dir ${RDOC_SOURCE_DIR}/3rdparty/glslang)
 -set(glslang_sources
 -    ${glslang_dir}/OGLCompilersDLL/InitializeDll.cpp
@@ -161,6 +176,9 @@ index 8ee73e4db..d5c2f17fd 100644
 -    ${glslang_dir}/SPIRV/Logger.h
 -    ${glslang_dir}/SPIRV/SpvBuilder.cpp
 -    ${glslang_dir}/SPIRV/SpvBuilder.h
+-    ${glslang_dir}/SPIRV/SpvTools.cpp
+-    ${glslang_dir}/SPIRV/SpvTools.h
+-    ${glslang_dir}/SPIRV/SpvPostProcess.cpp
 -    ${glslang_dir}/SPIRV/spvIR.h
 -    ${glslang_dir}/glslang/GenericCodeGen/CodeGen.cpp
 -    ${glslang_dir}/glslang/GenericCodeGen/Link.cpp
@@ -232,7 +250,7 @@ index 8ee73e4db..d5c2f17fd 100644
  set(sources
      spirv_common.cpp
      spirv_common.h
-@@ -90,28 +5,12 @@ set(sources
+@@ -93,30 +5,12 @@ set(sources
      spirv_editor.cpp
      spirv_compile.cpp
      spirv_disassemble.cpp
@@ -244,10 +262,12 @@ index 8ee73e4db..d5c2f17fd 100644
  add_definitions(-DNV_EXTENSIONS)
  
 -set_source_files_properties(${glslang_sources}
--    PROPERTIES COMPILE_FLAGS "-Wno-ignored-qualifiers")
+-    PROPERTIES COMPILE_FLAGS "-Wno-ignored-qualifiers -Wno-strict-aliasing")
 -
 -if(CMAKE_COMPILER_IS_GNUCXX AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 7.0)
--    set_source_files_properties(${glslang_dir}/glslang/MachineIndependent/reflection.cpp
+-    set_source_files_properties(
+-        ${glslang_dir}/glslang/MachineIndependent/reflection.cpp
+-        ${glslang_dir}/glslang/MachineIndependent/Intermediate.cpp
 -        PROPERTIES COMPILE_FLAGS "-Wno-implicit-fallthrough -Wno-ignored-qualifiers")
 -endif()
 -
@@ -264,33 +284,44 @@ index 8ee73e4db..d5c2f17fd 100644
  target_include_directories(rdoc_spirv ${RDOC_INCLUDES})
 +target_link_libraries(rdoc_spirv SPIRV)
 diff --git a/renderdoc/driver/shaders/spirv/spirv_common.cpp b/renderdoc/driver/shaders/spirv/spirv_common.cpp
-index 8917b7eee..78a4574bf 100644
+index c14698a08..40650214c 100644
 --- a/renderdoc/driver/shaders/spirv/spirv_common.cpp
 +++ b/renderdoc/driver/shaders/spirv/spirv_common.cpp
-@@ -28,7 +28,7 @@
+@@ -30,8 +30,8 @@
  #undef min
  #undef max
  
+-#include "3rdparty/glslang/glslang/Include/Types.h"
 -#include "3rdparty/glslang/glslang/Public/ShaderLang.h"
 +#include "glslang/glslang/Public/ShaderLang.h"
++#include "glslang/Include/Types.h"
  
  static bool inited = false;
- std::vector<glslang::TShader *> allocatedShaders;
+ std::vector<glslang::TShader *> *allocatedShaders = NULL;
 diff --git a/renderdoc/driver/shaders/spirv/spirv_common.h b/renderdoc/driver/shaders/spirv/spirv_common.h
-index f6479b474..bea2ca2dc 100644
+index a5d91a4c9..e12c17fc7 100644
 --- a/renderdoc/driver/shaders/spirv/spirv_common.h
 +++ b/renderdoc/driver/shaders/spirv/spirv_common.h
-@@ -28,7 +28,7 @@
+@@ -28,8 +28,8 @@
  #include <string>
  #include <utility>
  #include <vector>
 -#include "3rdparty/glslang/SPIRV/spirv.hpp"
+-#include "3rdparty/glslang/glslang/Include/ResourceLimits.h"
 +#include "glslang/SPIRV/spirv.hpp"
++#include "glslang/Include/ResourceLimits.h"
  #include "api/replay/renderdoc_replay.h"
  
  using std::string;
+@@ -231,4 +231,4 @@ void glslangGetProgramResourceiv(glslang::TProgram *program, ReflectionInterface
+ uint32_t glslangGetProgramResourceIndex(glslang::TProgram *program, const char *name);
+ 
+ const char *glslangGetProgramResourceName(glslang::TProgram *program,
+-                                          ReflectionInterface programInterface, uint32_t index);
+\ No newline at end of file
++                                          ReflectionInterface programInterface, uint32_t index);
 diff --git a/renderdoc/driver/shaders/spirv/spirv_compile.cpp b/renderdoc/driver/shaders/spirv/spirv_compile.cpp
-index f0ca67397..d3f0b87df 100644
+index 6b69b2fbd..0cb2ea89b 100644
 --- a/renderdoc/driver/shaders/spirv/spirv_compile.cpp
 +++ b/renderdoc/driver/shaders/spirv/spirv_compile.cpp
 @@ -28,8 +28,8 @@
@@ -305,10 +336,10 @@ index f0ca67397..d3f0b87df 100644
  TBuiltInResource DefaultResources = {
      /*.maxLights =*/32,
 diff --git a/renderdoc/driver/shaders/spirv/spirv_disassemble.cpp b/renderdoc/driver/shaders/spirv/spirv_disassemble.cpp
-index 5ebc48c5d..fd1bcc140 100644
+index eceff3f53..5740bf6b3 100644
 --- a/renderdoc/driver/shaders/spirv/spirv_disassemble.cpp
 +++ b/renderdoc/driver/shaders/spirv/spirv_disassemble.cpp
-@@ -36,16 +36,16 @@ using std::make_pair;
+@@ -38,16 +38,16 @@ using std::make_pair;
  #undef min
  #undef max
  
@@ -332,7 +363,7 @@ index 5ebc48c5d..fd1bcc140 100644
  
  // I'm not sure yet if this makes things clearer or worse. On the one hand
 diff --git a/renderdoc/driver/shaders/spirv/spirv_editor.h b/renderdoc/driver/shaders/spirv/spirv_editor.h
-index a41bfe9db..a299409a2 100644
+index 37d92466c..f75c28e56 100644
 --- a/renderdoc/driver/shaders/spirv/spirv_editor.h
 +++ b/renderdoc/driver/shaders/spirv/spirv_editor.h
 @@ -29,7 +29,7 @@
@@ -342,10 +373,10 @@ index a41bfe9db..a299409a2 100644
 -#include "3rdparty/glslang/SPIRV/spirv.hpp"
 +#include "glslang/SPIRV/spirv.hpp"
  #include "api/replay/renderdoc_replay.h"
+ #include "common/common.h"
  
- class SPIRVOperation;
 diff --git a/renderdoc/driver/shaders/spirv/spirv_stringise.cpp b/renderdoc/driver/shaders/spirv/spirv_stringise.cpp
-index ec5b1c602..dc6989ed8 100644
+index 220844aef..26e65165e 100644
 --- a/renderdoc/driver/shaders/spirv/spirv_stringise.cpp
 +++ b/renderdoc/driver/shaders/spirv/spirv_stringise.cpp
 @@ -22,7 +22,7 @@
@@ -358,7 +389,7 @@ index ec5b1c602..dc6989ed8 100644
  #include "common/common.h"
  
 diff --git a/renderdoc/driver/vulkan/vk_debug.cpp b/renderdoc/driver/vulkan/vk_debug.cpp
-index 9ea26ba3a..ef172898b 100644
+index 8eb12747a..c5cbfc286 100644
 --- a/renderdoc/driver/vulkan/vk_debug.cpp
 +++ b/renderdoc/driver/vulkan/vk_debug.cpp
 @@ -24,7 +24,7 @@
@@ -371,7 +402,7 @@ index 9ea26ba3a..ef172898b 100644
  #include "driver/ihv/amd/amd_counters.h"
  #include "driver/ihv/amd/official/GPUPerfAPI/Include/GPUPerfAPI-VK.h"
 diff --git a/renderdoc/driver/vulkan/vk_info.cpp b/renderdoc/driver/vulkan/vk_info.cpp
-index 71be261f0..eac4716d7 100644
+index 0d0bc189b..3a75939cd 100644
 --- a/renderdoc/driver/vulkan/vk_info.cpp
 +++ b/renderdoc/driver/vulkan/vk_info.cpp
 @@ -23,7 +23,7 @@
@@ -381,10 +412,10 @@ index 71be261f0..eac4716d7 100644
 -#include "3rdparty/glslang/SPIRV/spirv.hpp"
 +#include "glslang/SPIRV/spirv.hpp"
  
- void DescSetLayout::Init(VulkanResourceManager *resourceMan, VulkanCreationInfo &info,
-                          const VkDescriptorSetLayoutCreateInfo *pCreateInfo)
+ VkDynamicState ConvertDynamicState(VulkanDynamicStateIndex idx)
+ {
 diff --git a/renderdoc/driver/vulkan/vk_overlay.cpp b/renderdoc/driver/vulkan/vk_overlay.cpp
-index 9b355d06a..a2f18a1cd 100644
+index 9a3b0fdf2..a7c036808 100644
 --- a/renderdoc/driver/vulkan/vk_overlay.cpp
 +++ b/renderdoc/driver/vulkan/vk_overlay.cpp
 @@ -23,7 +23,7 @@
@@ -397,7 +428,7 @@ index 9b355d06a..a2f18a1cd 100644
  #include "driver/shaders/spirv/spirv_common.h"
  #include "maths/camera.h"
 diff --git a/renderdoc/driver/vulkan/vk_postvs.cpp b/renderdoc/driver/vulkan/vk_postvs.cpp
-index 467b98ff0..ae57f954b 100644
+index 1e1a38923..60d61f9da 100644
 --- a/renderdoc/driver/vulkan/vk_postvs.cpp
 +++ b/renderdoc/driver/vulkan/vk_postvs.cpp
 @@ -23,8 +23,8 @@
@@ -412,7 +443,7 @@ index 467b98ff0..ae57f954b 100644
  #include "driver/shaders/spirv/spirv_editor.h"
  #include "vk_core.h"
 diff --git a/renderdoc/os/win32/win32_shellext.cpp b/renderdoc/os/win32/win32_shellext.cpp
-index 9c73f4967..ee103c5bb 100644
+index ed8f0d0d1..21e2d44c3 100644
 --- a/renderdoc/os/win32/win32_shellext.cpp
 +++ b/renderdoc/os/win32/win32_shellext.cpp
 @@ -29,7 +29,7 @@
@@ -425,7 +456,7 @@ index 9c73f4967..ee103c5bb 100644
  #include "common/common.h"
  #include "core/core.h"
 diff --git a/renderdoc/serialise/codecs/xml_codec.cpp b/renderdoc/serialise/codecs/xml_codec.cpp
-index 882d5d65f..cb53760d7 100644
+index dee1867e7..0adf8e174 100644
 --- a/renderdoc/serialise/codecs/xml_codec.cpp
 +++ b/renderdoc/serialise/codecs/xml_codec.cpp
 @@ -27,7 +27,7 @@
@@ -435,10 +466,10 @@ index 882d5d65f..cb53760d7 100644
 -#include "3rdparty/pugixml/pugixml.hpp"
 +#include "pugixml.hpp"
  
- static const char *typeNames[] = {
-     "chunk", "struct", "array", "null", "buffer", "string",     "enum",
+ struct ThumbTypeAndData
+ {
 diff --git a/renderdoc/serialise/lz4io.h b/renderdoc/serialise/lz4io.h
-index be3e94efb..26edda5fb 100644
+index 154ecd0e3..c8df44fe3 100644
 --- a/renderdoc/serialise/lz4io.h
 +++ b/renderdoc/serialise/lz4io.h
 @@ -24,7 +24,7 @@
@@ -451,7 +482,7 @@ index be3e94efb..26edda5fb 100644
  
  class LZ4Compressor : public Compressor
 diff --git a/renderdoc/serialise/zstdio.h b/renderdoc/serialise/zstdio.h
-index f78138885..d15e58436 100644
+index 04c09df99..1099c167d 100644
 --- a/renderdoc/serialise/zstdio.h
 +++ b/renderdoc/serialise/zstdio.h
 @@ -24,7 +24,7 @@
@@ -464,5 +495,5 @@ index f78138885..d15e58436 100644
  
  class ZSTDCompressor : public Compressor
 -- 
-2.19.2
+2.21.0
 
