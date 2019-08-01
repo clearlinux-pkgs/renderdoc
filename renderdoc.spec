@@ -4,7 +4,7 @@
 #
 Name     : renderdoc
 Version  : 1.4.reduced
-Release  : 7
+Release  : 8
 URL      : http://localhost/cgit/projects/renderdoc/snapshot/renderdoc-1.4-reduced.tar.xz
 Source0  : http://localhost/cgit/projects/renderdoc/snapshot/renderdoc-1.4-reduced.tar.xz
 Source1  : https://github.com/baldurk/swig/archive/renderdoc-modified-6.tar.gz
@@ -22,7 +22,7 @@ BuildRequires : glibc-dev
 BuildRequires : glslang-dev
 BuildRequires : libX11-dev libICE-dev libSM-dev libXau-dev libXcomposite-dev libXcursor-dev libXdamage-dev libXdmcp-dev libXext-dev libXfixes-dev libXft-dev libXi-dev libXinerama-dev libXi-dev libXmu-dev libXpm-dev libXrandr-dev libXrender-dev libXres-dev libXScrnSaver-dev libXt-dev libXtst-dev libXv-dev libXxf86misc-dev libXxf86vm-dev
 BuildRequires : lz4-dev
-BuildRequires : openjdk9
+BuildRequires : openjdk11
 BuildRequires : pkg-config
 BuildRequires : pkgconfig(Qt5Svg)
 BuildRequires : pkgconfig(Qt5Widgets)
@@ -110,8 +110,8 @@ cp -r %{_topdir}/BUILD/swig-renderdoc-modified-6/* %{_topdir}/BUILD/renderdoc-1.
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
-export LANG=C
-export SOURCE_DATE_EPOCH=1559942519
+export LANG=C.UTF-8
+export SOURCE_DATE_EPOCH=1564692461
 mkdir -p clr-build
 pushd clr-build
 export GCC_IGNORE_WERROR=1
@@ -132,7 +132,7 @@ make  %{?_smp_mflags} VERBOSE=1
 popd
 
 %install
-export SOURCE_DATE_EPOCH=1559942519
+export SOURCE_DATE_EPOCH=1564692461
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/renderdoc
 cp LICENSE.md %{buildroot}/usr/share/package-licenses/renderdoc/LICENSE.md
