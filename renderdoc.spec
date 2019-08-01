@@ -4,7 +4,7 @@
 #
 Name     : renderdoc
 Version  : 1.4.reduced
-Release  : 8
+Release  : 9
 URL      : http://localhost/cgit/projects/renderdoc/snapshot/renderdoc-1.4-reduced.tar.xz
 Source0  : http://localhost/cgit/projects/renderdoc/snapshot/renderdoc-1.4-reduced.tar.xz
 Source1  : https://github.com/baldurk/swig/archive/renderdoc-modified-6.tar.gz
@@ -111,7 +111,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1564692461
+export SOURCE_DATE_EPOCH=1564703139
 mkdir -p clr-build
 pushd clr-build
 export GCC_IGNORE_WERROR=1
@@ -132,7 +132,7 @@ make  %{?_smp_mflags} VERBOSE=1
 popd
 
 %install
-export SOURCE_DATE_EPOCH=1564692461
+export SOURCE_DATE_EPOCH=1564703139
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/renderdoc
 cp LICENSE.md %{buildroot}/usr/share/package-licenses/renderdoc/LICENSE.md
@@ -149,6 +149,7 @@ cp renderdoc/3rdparty/zstd/LICENSE %{buildroot}/usr/share/package-licenses/rende
 cp renderdoc/driver/ihv/amd/official/GPUPerfAPI/LICENSE %{buildroot}/usr/share/package-licenses/renderdoc/renderdoc_driver_ihv_amd_official_GPUPerfAPI_LICENSE
 cp renderdoc/driver/ihv/amd/official/RGA/Common/License.txt %{buildroot}/usr/share/package-licenses/renderdoc/renderdoc_driver_ihv_amd_official_RGA_Common_License.txt
 cp renderdoc/driver/ihv/amd/official/RGA/elf/LICENSE.md %{buildroot}/usr/share/package-licenses/renderdoc/renderdoc_driver_ihv_amd_official_RGA_elf_LICENSE.md
+cp util/installer/LICENSE.rtf %{buildroot}/usr/share/package-licenses/renderdoc/util_installer_LICENSE.rtf
 pushd clr-build
 %make_install
 popd
@@ -203,3 +204,4 @@ rm -rf /usr/share/menu/
 /usr/share/package-licenses/renderdoc/renderdoc_driver_ihv_amd_official_GPUPerfAPI_LICENSE
 /usr/share/package-licenses/renderdoc/renderdoc_driver_ihv_amd_official_RGA_Common_License.txt
 /usr/share/package-licenses/renderdoc/renderdoc_driver_ihv_amd_official_RGA_elf_LICENSE.md
+/usr/share/package-licenses/renderdoc/util_installer_LICENSE.rtf
