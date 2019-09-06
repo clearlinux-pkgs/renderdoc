@@ -4,7 +4,7 @@
 #
 Name     : renderdoc
 Version  : 1.4.reduced
-Release  : 9
+Release  : 10
 URL      : http://localhost/cgit/projects/renderdoc/snapshot/renderdoc-1.4-reduced.tar.xz
 Source0  : http://localhost/cgit/projects/renderdoc/snapshot/renderdoc-1.4-reduced.tar.xz
 Source1  : https://github.com/baldurk/swig/archive/renderdoc-modified-6.tar.gz
@@ -111,7 +111,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1564703139
+export SOURCE_DATE_EPOCH=1567786883
 mkdir -p clr-build
 pushd clr-build
 export GCC_IGNORE_WERROR=1
@@ -132,7 +132,7 @@ make  %{?_smp_mflags} VERBOSE=1
 popd
 
 %install
-export SOURCE_DATE_EPOCH=1564703139
+export SOURCE_DATE_EPOCH=1567786883
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/renderdoc
 cp LICENSE.md %{buildroot}/usr/share/package-licenses/renderdoc/LICENSE.md
