@@ -4,13 +4,13 @@
 #
 Name     : renderdoc
 Version  : 1.4.reduced
-Release  : 10
+Release  : 11
 URL      : http://localhost/cgit/projects/renderdoc/snapshot/renderdoc-1.4-reduced.tar.xz
 Source0  : http://localhost/cgit/projects/renderdoc/snapshot/renderdoc-1.4-reduced.tar.xz
 Source1  : https://github.com/baldurk/swig/archive/renderdoc-modified-6.tar.gz
 Summary  : Allows param links in Sphinx function/method descriptions to be linkable
 Group    : Development/Tools
-License  : Apache-2.0 BSD-2-Clause BSD-3-Clause BSD-3-Clause-Clear BSL-1.0 HPND MIT Zlib
+License  : Apache-2.0 BSD-2-Clause BSD-3-Clause BSD-3-Clause-Clear BSL-1.0 GPL-2.0 GPL-3.0 HPND MIT Zlib
 Requires: renderdoc-bin = %{version}-%{release}
 Requires: renderdoc-data = %{version}-%{release}
 Requires: renderdoc-lib = %{version}-%{release}
@@ -22,7 +22,6 @@ BuildRequires : glibc-dev
 BuildRequires : glslang-dev
 BuildRequires : libX11-dev libICE-dev libSM-dev libXau-dev libXcomposite-dev libXcursor-dev libXdamage-dev libXdmcp-dev libXext-dev libXfixes-dev libXft-dev libXi-dev libXinerama-dev libXi-dev libXmu-dev libXpm-dev libXrandr-dev libXrender-dev libXres-dev libXScrnSaver-dev libXt-dev libXtst-dev libXv-dev libXxf86misc-dev libXxf86vm-dev
 BuildRequires : lz4-dev
-BuildRequires : openjdk11
 BuildRequires : pkg-config
 BuildRequires : pkgconfig(Qt5Svg)
 BuildRequires : pkgconfig(Qt5Widgets)
@@ -34,6 +33,7 @@ BuildRequires : pkgconfig(xcb-keysyms)
 BuildRequires : pugixml-dev
 BuildRequires : python3
 BuildRequires : python3-dev
+BuildRequires : util-linux
 BuildRequires : zstd-dev
 Patch1: 0001-Don-t-use-bundled-sources-for-components-we-have-in-.patch
 
@@ -111,7 +111,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1567786883
+export SOURCE_DATE_EPOCH=1571685148
 mkdir -p clr-build
 pushd clr-build
 export GCC_IGNORE_WERROR=1
@@ -128,28 +128,30 @@ export CXXFLAGS="$CXXFLAGS -fno-lto "
 -DRENDERDOC_SWIG_PACKAGE=%{SOURCE1} \
 -DLIB_SUBFOLDER=renderdoc \
 -DVULKAN_LAYER_FOLDER=/usr/share/vulkan/implicit_layer.d
-make  %{?_smp_mflags} VERBOSE=1
+make  %{?_smp_mflags}  VERBOSE=1
 popd
 
 %install
-export SOURCE_DATE_EPOCH=1567786883
+export SOURCE_DATE_EPOCH=1571685148
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/renderdoc
-cp LICENSE.md %{buildroot}/usr/share/package-licenses/renderdoc/LICENSE.md
-cp docs/sphinx_exts/sphinx_paramlinks/LICENSE %{buildroot}/usr/share/package-licenses/renderdoc/docs_sphinx_exts_sphinx_paramlinks_LICENSE
-cp qrenderdoc/3rdparty/scintilla/License.txt %{buildroot}/usr/share/package-licenses/renderdoc/qrenderdoc_3rdparty_scintilla_License.txt
-cp qrenderdoc/3rdparty/toolwindowmanager/LICENSE %{buildroot}/usr/share/package-licenses/renderdoc/qrenderdoc_3rdparty_toolwindowmanager_LICENSE
-cp renderdoc/3rdparty/breakpad/LICENSE %{buildroot}/usr/share/package-licenses/renderdoc/renderdoc_3rdparty_breakpad_LICENSE
-cp renderdoc/3rdparty/catch/LICENSE.txt %{buildroot}/usr/share/package-licenses/renderdoc/renderdoc_3rdparty_catch_LICENSE.txt
-cp renderdoc/3rdparty/glslang/LICENSE.txt %{buildroot}/usr/share/package-licenses/renderdoc/renderdoc_3rdparty_glslang_LICENSE.txt
-cp renderdoc/3rdparty/include-bin/LICENSE %{buildroot}/usr/share/package-licenses/renderdoc/renderdoc_3rdparty_include-bin_LICENSE
-cp renderdoc/3rdparty/interceptor-lib/LICENSE %{buildroot}/usr/share/package-licenses/renderdoc/renderdoc_3rdparty_interceptor-lib_LICENSE
-cp renderdoc/3rdparty/pugixml/LICENSE.md %{buildroot}/usr/share/package-licenses/renderdoc/renderdoc_3rdparty_pugixml_LICENSE.md
-cp renderdoc/3rdparty/zstd/LICENSE %{buildroot}/usr/share/package-licenses/renderdoc/renderdoc_3rdparty_zstd_LICENSE
-cp renderdoc/driver/ihv/amd/official/GPUPerfAPI/LICENSE %{buildroot}/usr/share/package-licenses/renderdoc/renderdoc_driver_ihv_amd_official_GPUPerfAPI_LICENSE
-cp renderdoc/driver/ihv/amd/official/RGA/Common/License.txt %{buildroot}/usr/share/package-licenses/renderdoc/renderdoc_driver_ihv_amd_official_RGA_Common_License.txt
-cp renderdoc/driver/ihv/amd/official/RGA/elf/LICENSE.md %{buildroot}/usr/share/package-licenses/renderdoc/renderdoc_driver_ihv_amd_official_RGA_elf_LICENSE.md
-cp util/installer/LICENSE.rtf %{buildroot}/usr/share/package-licenses/renderdoc/util_installer_LICENSE.rtf
+cp %{_builddir}/renderdoc-1.4-reduced/LICENSE.md %{buildroot}/usr/share/package-licenses/renderdoc/96f99428f9168e7cf7a806e2e5f4e70ea89a2533
+cp %{_builddir}/renderdoc-1.4-reduced/docs/sphinx_exts/sphinx_paramlinks/LICENSE %{buildroot}/usr/share/package-licenses/renderdoc/66478105583dc4e96fec98299f68397e4a9c6927
+cp %{_builddir}/renderdoc-1.4-reduced/qrenderdoc/3rdparty/scintilla/License.txt %{buildroot}/usr/share/package-licenses/renderdoc/9da27f7b263edb706105ccd68880474013b11bca
+cp %{_builddir}/renderdoc-1.4-reduced/qrenderdoc/3rdparty/toolwindowmanager/LICENSE %{buildroot}/usr/share/package-licenses/renderdoc/57570fcce4be9b86d56e300cb08c92e39b516ca9
+cp %{_builddir}/renderdoc-1.4-reduced/renderdoc/3rdparty/breakpad/LICENSE %{buildroot}/usr/share/package-licenses/renderdoc/86dabb511ec367808a04ba4b87c4a3e0b97765e2
+cp %{_builddir}/renderdoc-1.4-reduced/renderdoc/3rdparty/catch/LICENSE.txt %{buildroot}/usr/share/package-licenses/renderdoc/3cba29011be2b9d59f6204d6fa0a386b1b2dbd90
+cp %{_builddir}/renderdoc-1.4-reduced/renderdoc/3rdparty/glslang/LICENSE.txt %{buildroot}/usr/share/package-licenses/renderdoc/b6162cb1ae79b7e8c672797b496ecd4575874592
+cp %{_builddir}/renderdoc-1.4-reduced/renderdoc/3rdparty/include-bin/LICENSE %{buildroot}/usr/share/package-licenses/renderdoc/d84cd641b9edb0f1071324bebce41507c6ef29a6
+cp %{_builddir}/renderdoc-1.4-reduced/renderdoc/3rdparty/interceptor-lib/LICENSE %{buildroot}/usr/share/package-licenses/renderdoc/78f5cba7977d1ead96f94a5efd38de0a3dba25a6
+cp %{_builddir}/renderdoc-1.4-reduced/renderdoc/3rdparty/pugixml/LICENSE.md %{buildroot}/usr/share/package-licenses/renderdoc/1194197740cc9b4f68f18f8f5d7e2f46693582da
+cp %{_builddir}/renderdoc-1.4-reduced/renderdoc/3rdparty/zstd/LICENSE %{buildroot}/usr/share/package-licenses/renderdoc/c4130945ca3d1f8ea4a3e8af36d3c18b2232116c
+cp %{_builddir}/renderdoc-1.4-reduced/renderdoc/driver/ihv/amd/official/GPUPerfAPI/LICENSE %{buildroot}/usr/share/package-licenses/renderdoc/94ea9b1c36be0c127f619add95cfd1e62869d401
+cp %{_builddir}/renderdoc-1.4-reduced/renderdoc/driver/ihv/amd/official/RGA/Common/License.txt %{buildroot}/usr/share/package-licenses/renderdoc/c9cf0423322b3bc3403dc546ee34b45f330755e9
+cp %{_builddir}/renderdoc-1.4-reduced/renderdoc/driver/ihv/amd/official/RGA/elf/LICENSE.md %{buildroot}/usr/share/package-licenses/renderdoc/96e3d1ffcb5a4a6715839da6b5add6fd69367956
+cp %{_builddir}/renderdoc-1.4-reduced/util/installer/LICENSE.rtf %{buildroot}/usr/share/package-licenses/renderdoc/9e60dae05623b7fc531fd8c4214636f84ded2520
+cp %{_builddir}/swig/CCache/COPYING %{buildroot}/usr/share/package-licenses/renderdoc/075d599585584bb0e4b526f5c40cb6b17e0da35a
+cp %{_builddir}/swig/LICENSE-GPL %{buildroot}/usr/share/package-licenses/renderdoc/8624bcdae55baeef00cd11d5dfcfa60f68710a02
 pushd clr-build
 %make_install
 popd
@@ -178,7 +180,7 @@ rm -rf /usr/share/menu/
 
 %files dev
 %defattr(-,root,root,-)
-/usr/include/*.h
+/usr/include/renderdoc.h
 
 %files doc
 %defattr(0644,root,root,0755)
@@ -190,18 +192,20 @@ rm -rf /usr/share/menu/
 
 %files license
 %defattr(0644,root,root,0755)
-/usr/share/package-licenses/renderdoc/LICENSE.md
-/usr/share/package-licenses/renderdoc/docs_sphinx_exts_sphinx_paramlinks_LICENSE
-/usr/share/package-licenses/renderdoc/qrenderdoc_3rdparty_scintilla_License.txt
-/usr/share/package-licenses/renderdoc/qrenderdoc_3rdparty_toolwindowmanager_LICENSE
-/usr/share/package-licenses/renderdoc/renderdoc_3rdparty_breakpad_LICENSE
-/usr/share/package-licenses/renderdoc/renderdoc_3rdparty_catch_LICENSE.txt
-/usr/share/package-licenses/renderdoc/renderdoc_3rdparty_glslang_LICENSE.txt
-/usr/share/package-licenses/renderdoc/renderdoc_3rdparty_include-bin_LICENSE
-/usr/share/package-licenses/renderdoc/renderdoc_3rdparty_interceptor-lib_LICENSE
-/usr/share/package-licenses/renderdoc/renderdoc_3rdparty_pugixml_LICENSE.md
-/usr/share/package-licenses/renderdoc/renderdoc_3rdparty_zstd_LICENSE
-/usr/share/package-licenses/renderdoc/renderdoc_driver_ihv_amd_official_GPUPerfAPI_LICENSE
-/usr/share/package-licenses/renderdoc/renderdoc_driver_ihv_amd_official_RGA_Common_License.txt
-/usr/share/package-licenses/renderdoc/renderdoc_driver_ihv_amd_official_RGA_elf_LICENSE.md
-/usr/share/package-licenses/renderdoc/util_installer_LICENSE.rtf
+/usr/share/package-licenses/renderdoc/075d599585584bb0e4b526f5c40cb6b17e0da35a
+/usr/share/package-licenses/renderdoc/1194197740cc9b4f68f18f8f5d7e2f46693582da
+/usr/share/package-licenses/renderdoc/3cba29011be2b9d59f6204d6fa0a386b1b2dbd90
+/usr/share/package-licenses/renderdoc/57570fcce4be9b86d56e300cb08c92e39b516ca9
+/usr/share/package-licenses/renderdoc/66478105583dc4e96fec98299f68397e4a9c6927
+/usr/share/package-licenses/renderdoc/78f5cba7977d1ead96f94a5efd38de0a3dba25a6
+/usr/share/package-licenses/renderdoc/8624bcdae55baeef00cd11d5dfcfa60f68710a02
+/usr/share/package-licenses/renderdoc/86dabb511ec367808a04ba4b87c4a3e0b97765e2
+/usr/share/package-licenses/renderdoc/94ea9b1c36be0c127f619add95cfd1e62869d401
+/usr/share/package-licenses/renderdoc/96e3d1ffcb5a4a6715839da6b5add6fd69367956
+/usr/share/package-licenses/renderdoc/96f99428f9168e7cf7a806e2e5f4e70ea89a2533
+/usr/share/package-licenses/renderdoc/9da27f7b263edb706105ccd68880474013b11bca
+/usr/share/package-licenses/renderdoc/9e60dae05623b7fc531fd8c4214636f84ded2520
+/usr/share/package-licenses/renderdoc/b6162cb1ae79b7e8c672797b496ecd4575874592
+/usr/share/package-licenses/renderdoc/c4130945ca3d1f8ea4a3e8af36d3c18b2232116c
+/usr/share/package-licenses/renderdoc/c9cf0423322b3bc3403dc546ee34b45f330755e9
+/usr/share/package-licenses/renderdoc/d84cd641b9edb0f1071324bebce41507c6ef29a6
