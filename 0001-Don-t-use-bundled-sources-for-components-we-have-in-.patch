@@ -1,4 +1,4 @@
-From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From 463de6ea018cd5331748fafaaf8974a5372211bb Mon Sep 17 00:00:00 2001
 From: Thiago Macieira <thiago.macieira@intel.com>
 Date: Mon, 26 Nov 2018 13:45:45 -0800
 Subject: [PATCH] Don't use bundled sources for components we have in the
@@ -9,7 +9,7 @@ Signed-off-by: Patrick McCarty <patrick.mccarty@intel.com>
 ---
  renderdoc/CMakeLists.txt                      |  54 +-------
  renderdoc/core/replay_proxy.cpp               |   2 +-
- renderdoc/data/glsl_shaders.cpp               |   4 +-
+ renderdoc/data/glsl_shaders.cpp               |   2 +-
  renderdoc/driver/d3d11/d3d11_resources.cpp    |   2 +-
  renderdoc/driver/d3d12/d3d12_resources.cpp    |   2 +-
  renderdoc/driver/gl/gl_shader_refl.cpp        |   2 +-
@@ -21,13 +21,13 @@ Signed-off-by: Patrick McCarty <patrick.mccarty@intel.com>
  renderdoc/serialise/codecs/xml_codec.cpp      |   2 +-
  renderdoc/serialise/lz4io.h                   |   2 +-
  renderdoc/serialise/zstdio.h                  |   2 +-
- 14 files changed, 23 insertions(+), 182 deletions(-)
+ 14 files changed, 22 insertions(+), 181 deletions(-)
 
 diff --git a/renderdoc/CMakeLists.txt b/renderdoc/CMakeLists.txt
-index 8e150e1..13197c5 100644
+index 7d124bac9..3705a55f7 100644
 --- a/renderdoc/CMakeLists.txt
 +++ b/renderdoc/CMakeLists.txt
-@@ -46,7 +46,12 @@ elseif(UNIX)
+@@ -53,7 +53,12 @@ elseif(UNIX)
      list(APPEND RDOC_LIBRARIES
          PRIVATE -lm
          PRIVATE -ldl
@@ -41,7 +41,7 @@ index 8e150e1..13197c5 100644
  
      if(ENABLE_XLIB)
          find_package(X11 REQUIRED)
-@@ -194,55 +199,8 @@ set(sources
+@@ -206,55 +211,8 @@ set(sources
      3rdparty/android/android_manifest.h
      3rdparty/catch/catch.cpp
      3rdparty/catch/catch.hpp
@@ -98,20 +98,20 @@ index 8e150e1..13197c5 100644
      3rdparty/stb/stb_image_write.h
      3rdparty/stb/stb_image_resize.h
 diff --git a/renderdoc/core/replay_proxy.cpp b/renderdoc/core/replay_proxy.cpp
-index 749f8f2..0057082 100644
+index 30131ea05..b7a5ab3be 100644
 --- a/renderdoc/core/replay_proxy.cpp
 +++ b/renderdoc/core/replay_proxy.cpp
-@@ -24,7 +24,7 @@
-  ******************************************************************************/
+@@ -25,7 +25,7 @@
  
  #include "replay_proxy.h"
+ #include <list>
 -#include "3rdparty/lz4/lz4.h"
 +#include "lz4.h"
  #include "serialise/lz4io.h"
  
  template <>
 diff --git a/renderdoc/data/glsl_shaders.cpp b/renderdoc/data/glsl_shaders.cpp
-index e3a1341..f211308 100644
+index 753cf00f7..e0ee5285e 100644
 --- a/renderdoc/data/glsl_shaders.cpp
 +++ b/renderdoc/data/glsl_shaders.cpp
 @@ -23,7 +23,7 @@
@@ -121,30 +121,23 @@ index e3a1341..f211308 100644
 -#include "3rdparty/glslang/glslang/Public/ShaderLang.h"
 +#include "glslang/glslang/Public/ShaderLang.h"
  #include "common/common.h"
+ #include "common/formatting.h"
  #include "driver/shaders/spirv/glslang_compile.h"
- 
-@@ -1854,4 +1854,4 @@ void main() {
-   };
- }
- 
--#endif
-\ No newline at end of file
-+#endif
 diff --git a/renderdoc/driver/d3d11/d3d11_resources.cpp b/renderdoc/driver/d3d11/d3d11_resources.cpp
-index a5afc27..7cef4cf 100644
+index b4caceed5..09fec8d1a 100644
 --- a/renderdoc/driver/d3d11/d3d11_resources.cpp
 +++ b/renderdoc/driver/d3d11/d3d11_resources.cpp
 @@ -24,7 +24,7 @@
   ******************************************************************************/
  
- #include "driver/d3d11/d3d11_resources.h"
+ #include "d3d11_resources.h"
 -#include "3rdparty/lz4/lz4.h"
 +#include "lz4.h"
  #include "api/app/renderdoc_app.h"
- #include "driver/d3d11/d3d11_context.h"
- #include "driver/d3d11/d3d11_renderstate.h"
+ #include "driver/dxgi/dxgi_wrapped.h"
+ #include "driver/shaders/dxbc/dxbc_reflect.h"
 diff --git a/renderdoc/driver/d3d12/d3d12_resources.cpp b/renderdoc/driver/d3d12/d3d12_resources.cpp
-index ebad458..6487ed2 100644
+index f05135766..baa347ba0 100644
 --- a/renderdoc/driver/d3d12/d3d12_resources.cpp
 +++ b/renderdoc/driver/d3d12/d3d12_resources.cpp
 @@ -23,7 +23,7 @@
@@ -157,7 +150,7 @@ index ebad458..6487ed2 100644
  #include "d3d12_command_list.h"
  #include "d3d12_command_queue.h"
 diff --git a/renderdoc/driver/gl/gl_shader_refl.cpp b/renderdoc/driver/gl/gl_shader_refl.cpp
-index 1a3f608..f2823ff 100644
+index 44a69846e..728392f78 100644
 --- a/renderdoc/driver/gl/gl_shader_refl.cpp
 +++ b/renderdoc/driver/gl/gl_shader_refl.cpp
 @@ -25,7 +25,7 @@
@@ -170,7 +163,7 @@ index 1a3f608..f2823ff 100644
  #include "gl_driver.h"
  
 diff --git a/renderdoc/driver/shaders/spirv/CMakeLists.txt b/renderdoc/driver/shaders/spirv/CMakeLists.txt
-index 8c63fc6..cf8f159 100644
+index fdd6d67d9..da2799b6e 100644
 --- a/renderdoc/driver/shaders/spirv/CMakeLists.txt
 +++ b/renderdoc/driver/shaders/spirv/CMakeLists.txt
 @@ -1,91 +1,3 @@
@@ -265,7 +258,7 @@ index 8c63fc6..cf8f159 100644
  set(sources
      glslang_compile.cpp
      glslang_compile.h
-@@ -103,41 +15,12 @@ set(sources
+@@ -106,41 +18,12 @@ set(sources
      spirv_processor.cpp
      spirv_processor.h
      spirv_disassemble.cpp
@@ -277,7 +270,7 @@ index 8c63fc6..cf8f159 100644
  add_definitions(-DNV_EXTENSIONS)
  
 -set_property(SOURCE ${glslang_sources}
--    PROPERTY COMPILE_FLAGS "-Wno-ignored-qualifiers -Wno-strict-aliasing")
+-    PROPERTY COMPILE_FLAGS "-Wno-ignored-qualifiers -Wno-strict-aliasing -Wno-unreachable-code-break")
 -
 -# GCC 7.0 and above needs -Wno-implicit-fallthrough on these files
 -if(CMAKE_COMPILER_IS_GNUCXX AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 6.9)
@@ -310,10 +303,10 @@ index 8c63fc6..cf8f159 100644
  target_include_directories(rdoc_spirv ${RDOC_INCLUDES})
 +target_link_libraries(rdoc_spirv SPIRV)
 diff --git a/renderdoc/driver/shaders/spirv/glslang_compile.cpp b/renderdoc/driver/shaders/spirv/glslang_compile.cpp
-index 9ec8490..ab49643 100644
+index deed9a005..199ce9493 100644
 --- a/renderdoc/driver/shaders/spirv/glslang_compile.cpp
 +++ b/renderdoc/driver/shaders/spirv/glslang_compile.cpp
-@@ -28,8 +28,8 @@
+@@ -29,8 +29,8 @@
  #undef min
  #undef max
  
@@ -323,12 +316,12 @@ index 9ec8490..ab49643 100644
 +#include "glslang/glslang/Public/ShaderLang.h"
  
  static bool glslang_inited = false;
- std::vector<glslang::TShader *> *allocatedShaders = NULL;
+ rdcarray<glslang::TShader *> *allocatedShaders = NULL;
 diff --git a/renderdoc/driver/shaders/spirv/spirv_compile.cpp b/renderdoc/driver/shaders/spirv/spirv_compile.cpp
-index 70b84f2..7f8b92c 100644
+index 42c2e3efd..e85804141 100644
 --- a/renderdoc/driver/shaders/spirv/spirv_compile.cpp
 +++ b/renderdoc/driver/shaders/spirv/spirv_compile.cpp
-@@ -29,8 +29,8 @@
+@@ -31,8 +31,8 @@
  #undef min
  #undef max
  
@@ -337,10 +330,10 @@ index 70b84f2..7f8b92c 100644
 +#include "glslang/SPIRV/GlslangToSpv.h"
 +#include "glslang/glslang/Public/ShaderLang.h"
  
- std::string rdcspv::Compile(const rdcspv::CompilationSettings &settings,
-                             const std::vector<std::string> &sources, std::vector<uint32_t> &spirv)
+ rdcstr rdcspv::Compile(const rdcspv::CompilationSettings &settings, const rdcarray<rdcstr> &sources,
+                        rdcarray<uint32_t> &spirv)
 diff --git a/renderdoc/driver/shaders/spirv/spirv_stringise.cpp b/renderdoc/driver/shaders/spirv/spirv_stringise.cpp
-index 009589d..0b5b010 100644
+index a3db63e5f..a3f93e6fd 100644
 --- a/renderdoc/driver/shaders/spirv/spirv_stringise.cpp
 +++ b/renderdoc/driver/shaders/spirv/spirv_stringise.cpp
 @@ -22,7 +22,7 @@
@@ -349,11 +342,11 @@ index 009589d..0b5b010 100644
  
 -#include "3rdparty/glslang/SPIRV/spirv.hpp"
 +#include "glslang/SPIRV/spirv.hpp"
- #include "api/replay/renderdoc_replay.h"
+ #include "api/replay/stringise.h"
  #include "common/common.h"
  
 diff --git a/renderdoc/os/win32/win32_shellext.cpp b/renderdoc/os/win32/win32_shellext.cpp
-index ed8f0d0..21e2d44 100644
+index 758bf0c21..6d3a5afe7 100644
 --- a/renderdoc/os/win32/win32_shellext.cpp
 +++ b/renderdoc/os/win32/win32_shellext.cpp
 @@ -29,7 +29,7 @@
@@ -366,11 +359,11 @@ index ed8f0d0..21e2d44 100644
  #include "common/common.h"
  #include "core/core.h"
 diff --git a/renderdoc/serialise/codecs/xml_codec.cpp b/renderdoc/serialise/codecs/xml_codec.cpp
-index cff23c8..5aa042f 100644
+index 265df8870..2f951d744 100644
 --- a/renderdoc/serialise/codecs/xml_codec.cpp
 +++ b/renderdoc/serialise/codecs/xml_codec.cpp
-@@ -27,7 +27,7 @@
- #include "serialise/rdcfile.h"
+@@ -30,7 +30,7 @@
+ #include "strings/string_utils.h"
  
  #include "3rdparty/miniz/miniz.h"
 -#include "3rdparty/pugixml/pugixml.hpp"
@@ -379,7 +372,7 @@ index cff23c8..5aa042f 100644
  struct ThumbTypeAndData
  {
 diff --git a/renderdoc/serialise/lz4io.h b/renderdoc/serialise/lz4io.h
-index 154ecd0..c8df44f 100644
+index daaef2b84..d518e0778 100644
 --- a/renderdoc/serialise/lz4io.h
 +++ b/renderdoc/serialise/lz4io.h
 @@ -24,7 +24,7 @@
@@ -392,7 +385,7 @@ index 154ecd0..c8df44f 100644
  
  class LZ4Compressor : public Compressor
 diff --git a/renderdoc/serialise/zstdio.h b/renderdoc/serialise/zstdio.h
-index 04c09df..1099c16 100644
+index 5b71f2b51..5bf05f083 100644
 --- a/renderdoc/serialise/zstdio.h
 +++ b/renderdoc/serialise/zstdio.h
 @@ -24,7 +24,7 @@
@@ -404,3 +397,6 @@ index 04c09df..1099c16 100644
  #include "streamio.h"
  
  class ZSTDCompressor : public Compressor
+-- 
+2.26.1
+
