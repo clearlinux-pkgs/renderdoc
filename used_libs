@@ -11,11 +11,12 @@ libX11.so.6
 libc.so.6
 libdl.so.2
 libgcc_s.so.1
-libglslang.so
+libglslang.so.11
 liblz4.so.1
 libm.so.6
 libpthread.so.0
 libpugixml.so.1
 libpython3.8.so.1.0
+libshiboken2.cpython-38-x86_64-linux-gnu.so.5.15
 libstdc++.so.6
 libzstd.so.1
