@@ -4,7 +4,7 @@
 #
 Name     : renderdoc
 Version  : 1.10.reduced
-Release  : 19
+Release  : 20
 URL      : http://localhost/cgit/projects/renderdoc/snapshot/renderdoc-1.10-reduced.tar.xz
 Source0  : http://localhost/cgit/projects/renderdoc/snapshot/renderdoc-1.10-reduced.tar.xz
 Source1  : https://github.com/baldurk/swig/archive/renderdoc-modified-7.tar.gz
@@ -20,7 +20,7 @@ BuildRequires : buildreq-cmake
 BuildRequires : buildreq-qmake
 BuildRequires : glibc-dev
 BuildRequires : glslang-dev
-BuildRequires : libX11-dev libICE-dev libSM-dev libXau-dev libXcomposite-dev libXcursor-dev libXdamage-dev libXdmcp-dev libXext-dev libXfixes-dev libXft-dev libXi-dev libXinerama-dev libXi-dev libXmu-dev libXpm-dev libXrandr-dev libXrender-dev libXres-dev libXScrnSaver-dev libXt-dev libXtst-dev libXv-dev libXxf86misc-dev libXxf86vm-dev
+BuildRequires : libX11-dev libICE-dev libSM-dev libXau-dev libXcomposite-dev libXcursor-dev libXdamage-dev libXdmcp-dev libXext-dev libXfixes-dev libXft-dev libXi-dev libXinerama-dev libXi-dev libXmu-dev libXpm-dev libXrandr-dev libXrender-dev libXres-dev libXScrnSaver-dev libXt-dev libXtst-dev libXv-dev libXxf86vm-dev
 BuildRequires : llvm-dev
 BuildRequires : lz4-dev
 BuildRequires : pkg-config
