@@ -4,7 +4,7 @@
 #
 Name     : renderdoc
 Version  : 1.10.reduced
-Release  : 20
+Release  : 21
 URL      : http://localhost/cgit/projects/renderdoc/snapshot/renderdoc-1.10-reduced.tar.xz
 Source0  : http://localhost/cgit/projects/renderdoc/snapshot/renderdoc-1.10-reduced.tar.xz
 Source1  : https://github.com/baldurk/swig/archive/renderdoc-modified-7.tar.gz
